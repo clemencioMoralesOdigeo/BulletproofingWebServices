@@ -14,7 +14,8 @@ import org.slf4j.Logger;
 @Repository
 public class PasswordRepository {
 
-    private static final String DATA_FOLDER = "data/";
+    private static final String DATA_DIRNAME = "data";
+    private static final String DATA_FOLDER = DATA_DIRNAME + "/";
     private static final String DAT_EXTENSION = ".dat";
     private static final String CURRENT_DIRECTORY = ".";
     private static final String USER = "User: ";
@@ -29,7 +30,15 @@ public class PasswordRepository {
         PasswordRepository.PATH = rawPath.substring(0, rawPath.length()-1);
     }
 
+    private static void assembleRepositoryDirectoryIfNotExists() {
+        File file = new File(DATA_DIRNAME);
+        if(!file.exists()) {
+            file.mkdir();
+        }
+    }
+
     public void createNewUserAndPassword(final User user) {
+        PasswordRepository.assembleRepositoryDirectoryIfNotExists();
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(PasswordRepository.PATH + DATA_FOLDER +
                     user.getName() + DAT_EXTENSION);
@@ -42,6 +51,7 @@ public class PasswordRepository {
     }
 
     public User readUser(final String username) {
+        PasswordRepository.assembleRepositoryDirectoryIfNotExists();
         User user = new User();
         try {
             FileInputStream fin = new FileInputStream(PasswordRepository.PATH + DATA_FOLDER + username + DAT_EXTENSION);
